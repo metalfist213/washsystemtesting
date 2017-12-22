@@ -4,19 +4,29 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FoamaticRemoteCommunication {
 	class Program {
+		[STAThread]
 		static void Main(string[] args) {
+			
 			DummyServer s = new DummyServer();
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new GUI());
 
 
-			Connection c = new Connection("localhost", 2222);
-			Transmission openRinse = new Transmission(Command.openValve);
-			openRinse.Parameter = 3;
-			c.SendTransmission(openRinse);
 
-			while (true) ;
+		}
+
+		public class ConnectionImpl : Connection {
+			public ConnectionImpl(string ip) : base(ip) {
+			}
+
+			public override void OnResponse(Transmission transmission) {
+				Console.WriteLine("Transmission over: " + transmission.TransmissionNumber + "\nTime Elapsed: " + transmission.TimeElapsed);
+			}
 		}
 	}
 }

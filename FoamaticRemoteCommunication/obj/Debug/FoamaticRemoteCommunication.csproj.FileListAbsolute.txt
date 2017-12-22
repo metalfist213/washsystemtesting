@@ -4,3 +4,11 @@ c:\users\kristian\documents\visual studio 2017\Projects\FoamaticRemoteCommunicat
 c:\users\kristian\documents\visual studio 2017\Projects\FoamaticRemoteCommunication\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.csprojResolveAssemblyReference.cache
 c:\users\kristian\documents\visual studio 2017\Projects\FoamaticRemoteCommunication\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.exe
 c:\users\kristian\documents\visual studio 2017\Projects\FoamaticRemoteCommunication\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.pdb
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\bin\Debug\FoamaticRemoteCommunication.exe.config
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\bin\Debug\FoamaticRemoteCommunication.exe
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\bin\Debug\FoamaticRemoteCommunication.pdb
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.csprojResolveAssemblyReference.cache
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.exe
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.pdb
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.csproj.GenerateResource.Cache
+C:\Users\Kristian\Documents\Visual Studio 2017\Projects\FoamaticRemoteCommunication\washsystemtesting\FoamaticRemoteCommunication\obj\Debug\FoamaticRemoteCommunication.GUI.resources

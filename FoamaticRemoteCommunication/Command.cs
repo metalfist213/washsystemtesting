@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace FoamaticRemoteCommunication {
 
 	public class Command {
-		public static readonly Command openValve = new Command("Open Valve", 101, 6);
-		public static readonly Command closevalve = new Command("Close Valve", 105, 6);
+		public static readonly Command openValve = new Command("Open Valve", 101, 5);
+		public static readonly Command closevalve = new Command("Close Valve", 105, 5);
 		public static readonly Command closeAll = new Command("Close All", 109);
 		public static readonly Command startWashProgram = new Command("Start Wash Program", 110, 15);
 		public static readonly Command stopWashProgram = new Command("Stop Wash Program", 111);
@@ -16,7 +16,6 @@ namespace FoamaticRemoteCommunication {
 		public static readonly Command setPressure = new Command("Enable Cleaning", 113, 3, 15);
 		public static readonly Command clearErrors = new Command("Clear Errors", 114);
 		public static readonly Command watchdog = new Command("Watchdog", 115);
-
 
 		private string name;
 		private UInt16 command;
@@ -34,6 +33,10 @@ namespace FoamaticRemoteCommunication {
 
 		public Command(string name, UInt16 command, UInt16 minValue, UInt16 maxValue) : this(name, command, maxValue) {
 			this.MinValue = minValue;
+		}
+
+		public override string ToString() {
+			return name;
 		}
 
 		public string Name { get => name; set => name = value; }
