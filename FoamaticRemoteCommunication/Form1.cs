@@ -31,28 +31,21 @@ namespace FoamaticRemoteCommunication {
 			}
 			this.comboBoxCommand.SelectedIndex = 0;
 			this.OnSelectCommand();
+
 		}
 
 		private void OnSelectCommand() {
 			Command current = (Command) this.comboBoxCommand.SelectedItem;
+			this.trackBarParameter.Maximum = current.MaxValue;
+			this.trackBarParameter.Minimum = current.MinValue;
+			this.parameterValue.Text = this.trackBarParameter.Value.ToString();
 			this.ChangeParameterText();
 			//this means no parameter value is taken
 			if (current.MaxValue == 0) {
-				this.comboBoxParameter.Enabled = false;
+				this.trackBarParameter.Enabled = false;
 			} else {
-				this.comboBoxParameter.Enabled = true;
-				this.comboBoxParameter.Items.Clear();
-				if (current.Bitwise) {
-					for (UInt16 i = current.MinValue; i <= current.MaxValue; i++) {
-						this.comboBoxParameter.Items.Add(current.ParameterNames[i]);
-					}
-				} else {
-					for (UInt16 i = current.MinValue; i <= current.MaxValue; i++) {
-						this.comboBoxParameter.Items.Add(i);
-					}
-				}
+				this.trackBarParameter.Enabled = true;
 			}
-			this.comboBoxParameter.SelectedIndex = 0;
 		}
 
 		private void Form1_Load(object sender, EventArgs e) {
@@ -71,7 +64,7 @@ namespace FoamaticRemoteCommunication {
 			this.login();
 		}
 
-		public void login() {
+		private void login() {
 			this.settings.IP_Address1 = this.ip.Text;
 			if (connection == null) {
 				try {
@@ -84,10 +77,10 @@ namespace FoamaticRemoteCommunication {
 				} catch (System.Net.Sockets.SocketException) {
 					this.labelIsConnected.Text = "Not Connected";
 					this.labelIsConnected.ForeColor = System.Drawing.Color.Red;
-					MessageBox.Show("Unable to connect to the requested ip", "Invalid IP Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Unable to connecto to the requested ip", "Invalid IP Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			} else {
-				this.connection.Close();
+				this.connection.Terminate();
 				this.connection = null;
 				this.buttonConnect.Text = "Connect";
 				this.labelIsConnected.Text = "Not Connected";
@@ -96,19 +89,18 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		private void trackBarParameter_Scroll(object sender, EventArgs e) {
-			//this.parameterValue.Text = this.trackBarParameter.Value.ToString();
+			this.parameterValue.Text = this.trackBarParameter.Value.ToString();
 			Command current = (Command) this.comboBoxCommand.SelectedItem;
 			ChangeParameterText();
 		}
 
 		private void ChangeParameterText() {
 			Command current = (Command) this.comboBoxCommand.SelectedItem;
-			/*
 			if (current.CommandId == 101 || current.CommandId == 105) {
-				this.parameter.Text = "Parameter: " + Constants.VALVE_NAMES[this.trackBarParameter.Value];
+				this.parameter.Text = "Parameter: " + Constants.VALVES[this.trackBarParameter.Value];
 			} else {
 				this.parameter.Text = "Parameter";
-			}*/
+			}
 		}
 
 		private void buttonConnect_KeyUp(object sender, KeyEventArgs e) {
@@ -119,14 +111,7 @@ namespace FoamaticRemoteCommunication {
 
 		private void buttonExecute_Click(object sender, EventArgs e) {
 			Transmission newTransmission = new Transmission((Command) this.comboBoxCommand.SelectedItem);
-
-			if (newTransmission.Command.Bitwise) {
-				newTransmission.Parameter = Constants.GetIndexByString((string)this.comboBoxParameter.SelectedItem, newTransmission.Command.ParameterNames);
-			} else {
-				if (newTransmission.Command.MaxValue != 0)
-					newTransmission.Parameter = (UInt16)this.comboBoxParameter.SelectedItem;
-			}
-
+			newTransmission.Parameter = (UInt16)this.trackBarParameter.Value;
 			this.connection.SendTransmission(newTransmission);
 		}
 
@@ -171,14 +156,6 @@ namespace FoamaticRemoteCommunication {
 			this.listViewLog.ContextMenu = menu;
 
 		}
-
-		private void comboBoxParameter_SelectedIndexChanged(object sender, EventArgs e) {
-
-		}
-
-		private void eventStatus_TextChanged(object sender, EventArgs e) {
-
-		}
 	}
 
 	class ConnectionGUIImpl : Connection {
@@ -193,79 +170,19 @@ namespace FoamaticRemoteCommunication {
 		public override void OnResponse(Transmission transmission) {
 			gui.Invoke(new MethodInvoker(delegate {
 				ListViewItem item = this.gui.listViewLog.FindItemWithText(transmission.TransmissionNumber.ToString());
-				item.UseItemStyleForSubItems = false;
-				item.SubItems[3].Text = "done";
-				item.SubItems[4].ForeColor = (transmission.Acknowledge.Equals(AcknowledgeType.ACK)) ? Color.Green : Color.Red;
-				item.SubItems[4].Text = transmission.Acknowledge.ToString();
-				item.SubItems[5].Text = transmission.ResponseHex;
-				item.SubItems[6].Text = transmission.TimeElapsed.ToString() + " ms";
+				item.SubItems[2].Text = "done";
+				item.SubItems[3].Text = transmission.Acknowledge.ToString();
+				item.SubItems[4].Text = transmission.TimeElapsed.ToString() + " ms";
 			}));
 		}
 
 		public override void OnSend(Transmission transmission) {
 			gui.Invoke(new MethodInvoker(delegate {
-				string[] row;
-				if (!transmission.Command.Bitwise) {
-					string additionalParameter = (transmission.Command.MaxValue != 0) ? ", "+transmission.Parameter.ToString() : ""; 
-					string[] altrow = { transmission.TransmissionNumber.ToString(), transmission.Command.Name + additionalParameter, transmission.SendHex, "pending..", "","", "..."};
-					row = altrow;
-				} else {
-					string[] altrow = { transmission.TransmissionNumber.ToString(),transmission.Command.Name + ", " + transmission.Command.ParameterNames[transmission.getBitwiseParameter()], transmission.SendHex, "pending..", "", "", "..."};
-					row = altrow;
-				}
+				string[] row = { transmission.TransmissionNumber.ToString(),transmission.Command.Name + ", " + transmission.Parameter, "pending..", "", "..."};
 				ListViewItem item = new ListViewItem(row);
-				item.SubItems[2].Text = transmission.SendHex;
-				this.gui.listViewLog.Items.Insert(0, item);
+				item.ImageKey = transmission.TransmissionNumber.ToString();
+				this.gui.listViewLog.Items.Add(item);
 			}));
-		}
-
-		public override void OnEvent(Event status) {
-			if (status == null) {
-				return;
-			}
-			try {
-				gui.Invoke(new MethodInvoker(delegate {
-					string newStatus = "Status:\n";
-					newStatus += status.Status.ToString() + "\n";
-					newStatus += "Telegram Number: " + status.Number + "\n";
-					if (status.ErrorWord1 != "") {
-						newStatus += "Error: " + status.ErrorWord1 + " " + status.ErrorWord2 + "\n";
-					}
-					if (status.PumpErrorWord != "") {
-						newStatus += "Pump Error: " + status.PumpErrorWord + "\n";
-					}
-
-					if (status.CleaningInProgress) {
-						newStatus += "Cleaning in progress..\n";
-					}
-
-					if (status.ReadyForCleaning) {
-						newStatus += "Ready for cleaning..\n";
-					}
-
-					if (status.ProgramStatus != ProgramStatus.NONE && status.ProgramStatus != ProgramStatus.FAILED) {
-						newStatus += "Program " + status.ProgramNumber + " " + status.ProgramStatus.ToString() + "\n";
-					}
-
-					if (status.ProgramStatus == ProgramStatus.FAILED) {
-						newStatus += "Program " + status.ProgramNumber + " " + ProgramStatus.FAILED.ToString() + " with error code: " + status.ErrorCode;
-					}
-
-					if(gui.checkBoxShowInHex.Checked) {
-						newStatus += "\n\nIn Hexadecimal:\n" + status.InHex;
-					}
-
-					gui.eventStatus.Text = newStatus;
-				}));
-			} catch(System.NullReferenceException e) {
-				Console.WriteLine("Null Reference Exception\n"+e);
-			}
-		}
-
-		public override void OnDisconnect() {
-			Console.WriteLine("Here!");
-			gui.Invoke(new MethodInvoker(this.gui.login));
-
 		}
 	}
 }

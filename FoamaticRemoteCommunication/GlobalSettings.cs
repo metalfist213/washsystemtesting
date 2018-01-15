@@ -40,12 +40,7 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		private void Load() {
-			try {
-				this.document.Load("settings.xml");
-			} catch(System.Xml.XmlException) {
-				this.Generate();
-				return;
-			}
+			this.document.Load("settings.xml");
 
 			this.IP_Address1 = this.document.GetElementsByTagName("settings")[0].Attributes[1].Value;
 			this.WatchdogTimeout = int.Parse(this.document.GetElementsByTagName("settings")[0].Attributes[0].Value);

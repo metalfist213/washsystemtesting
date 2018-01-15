@@ -13,8 +13,6 @@ namespace FoamaticRemoteCommunication {
 		private UInt16 transmissionNumber;
 		private byte[] response;
 		private AcknowledgeType acknowledge;
-		private string sendHex;
-		private string responseHex;
 
 		private Stopwatch watch;
 
@@ -28,23 +26,17 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		public Command Command { get => command; set => command = value; }
-		public ushort Parameter { get => parameter; set => parameter = SetParameter(value); } 
-
+		public ushort Parameter { get => parameter; set => parameter = SetParameter(value); }
 		public long TimeElapsed { get => this.watch.ElapsedMilliseconds; }
 		public ushort TransmissionNumber { get => transmissionNumber; set => transmissionNumber = value; }
 		public byte[] Response { get => response; set => response = value; }
 		internal AcknowledgeType Acknowledge { get => acknowledge; set => acknowledge = value; }
-		public string SendHex { get => sendHex; set => sendHex = ConvertToReadableHex(value); }
-		public string ResponseHex { get => responseHex; set => responseHex = ConvertToReadableHex(value); }
 
 		private UInt16 SetParameter(UInt16 value) {
 			if(this.command.MaxValue < value && this.command.MinValue > value) {
 				throw new ArgumentException("The value of the parameters must stay between their min- and max values!");
 			}
 
-			if(this.command.Bitwise) {
-				value = (ushort) Math.Pow(2, value);
-			}
 
 			return value;
 		}
@@ -57,27 +49,8 @@ namespace FoamaticRemoteCommunication {
 			this.watch.Stop();
 			return this.watch.ElapsedMilliseconds;
 		}
-
-		internal int getBitwiseParameter() {
-			return (ushort)(Math.Log(parameter) / Math.Log(2));
-		}
-
-		private string ConvertToReadableHex(string s) {
-			string hex = "0x";
-
-
-			string[] split = s.Split('-');
-
-			for (int i = 0; i < split.Length; i++) {
-				hex += split[i];
-				if (i < split.Length - 1) {
-					hex += "-0x";
-				}
-			}
-			return hex;
-		}
 	}
-	public enum AcknowledgeType {
+	enum AcknowledgeType {
 		ACK, NACK
 	}
 }
