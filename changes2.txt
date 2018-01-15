@@ -1,0 +1,5 @@
+
+watchdog show watchdog telegrams
+
+respons i hex
+

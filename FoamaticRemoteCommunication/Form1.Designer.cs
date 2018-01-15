@@ -27,24 +27,25 @@
 			this.buttonConnect = new System.Windows.Forms.Button();
 			this.comboBoxCommand = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.trackBarParameter = new System.Windows.Forms.TrackBar();
 			this.parameter = new System.Windows.Forms.Label();
 			this.buttonExecute = new System.Windows.Forms.Button();
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.listViewLog = new System.Windows.Forms.ListView();
 			this.telegramNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.command = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.hexadecimal = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.status = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.response = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.responseHex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.responseTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.eventStatus = new System.Windows.Forms.RichTextBox();
 			this.labelIsConnected = new System.Windows.Forms.Label();
-			this.parameterValue = new System.Windows.Forms.Label();
 			this.textBoxKeepAlive = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.keepAliveUpdate = new System.Windows.Forms.Button();
-			((System.ComponentModel.ISupportInitialize)(this.trackBarParameter)).BeginInit();
+			this.comboBoxParameter = new System.Windows.Forms.ComboBox();
+			this.checkBoxShowInHex = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// ip
@@ -86,18 +87,10 @@
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Command";
 			// 
-			// trackBarParameter
-			// 
-			this.trackBarParameter.Location = new System.Drawing.Point(194, 79);
-			this.trackBarParameter.Name = "trackBarParameter";
-			this.trackBarParameter.Size = new System.Drawing.Size(354, 56);
-			this.trackBarParameter.TabIndex = 5;
-			this.trackBarParameter.Scroll += new System.EventHandler(this.trackBarParameter_Scroll);
-			// 
 			// parameter
 			// 
 			this.parameter.AutoSize = true;
-			this.parameter.Location = new System.Drawing.Point(330, 59);
+			this.parameter.Location = new System.Drawing.Point(257, 59);
 			this.parameter.Name = "parameter";
 			this.parameter.Size = new System.Drawing.Size(74, 17);
 			this.parameter.TabIndex = 6;
@@ -117,15 +110,20 @@
 			// listViewLog
 			// 
 			this.listViewLog.Activation = System.Windows.Forms.ItemActivation.OneClick;
+			this.listViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.telegramNumber,
             this.command,
+            this.hexadecimal,
             this.status,
             this.response,
+            this.responseHex,
             this.responseTime});
-			this.listViewLog.Location = new System.Drawing.Point(14, 108);
+			this.listViewLog.Location = new System.Drawing.Point(14, 109);
 			this.listViewLog.Name = "listViewLog";
-			this.listViewLog.Size = new System.Drawing.Size(474, 393);
+			this.listViewLog.Size = new System.Drawing.Size(1048, 544);
 			this.listViewLog.TabIndex = 8;
 			this.listViewLog.UseCompatibleStateImageBehavior = false;
 			this.listViewLog.View = System.Windows.Forms.View.Details;
@@ -139,32 +137,45 @@
 			// command
 			// 
 			this.command.Text = "Command";
-			this.command.Width = 163;
+			this.command.Width = 158;
+			// 
+			// hexadecimal
+			// 
+			this.hexadecimal.Text = "Command in hexadecimal";
+			this.hexadecimal.Width = 344;
 			// 
 			// status
 			// 
 			this.status.Text = "Status";
-			this.status.Width = 75;
+			this.status.Width = 112;
 			// 
 			// response
 			// 
 			this.response.Text = "Response";
-			this.response.Width = 95;
+			this.response.Width = 106;
+			// 
+			// responseHex
+			// 
+			this.responseHex.Text = "Response in hexadecimal";
+			this.responseHex.Width = 189;
 			// 
 			// responseTime
 			// 
 			this.responseTime.Text = "Delay";
-			this.responseTime.Width = 78;
+			this.responseTime.Width = 93;
 			// 
 			// eventStatus
 			// 
+			this.eventStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.eventStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.1F);
-			this.eventStatus.Location = new System.Drawing.Point(494, 108);
+			this.eventStatus.Location = new System.Drawing.Point(1068, 108);
 			this.eventStatus.Name = "eventStatus";
 			this.eventStatus.ReadOnly = true;
-			this.eventStatus.Size = new System.Drawing.Size(259, 393);
+			this.eventStatus.Size = new System.Drawing.Size(334, 544);
 			this.eventStatus.TabIndex = 9;
 			this.eventStatus.Text = "Status:";
+			this.eventStatus.TextChanged += new System.EventHandler(this.eventStatus_TextChanged);
 			// 
 			// labelIsConnected
 			// 
@@ -175,15 +186,6 @@
 			this.labelIsConnected.Size = new System.Drawing.Size(102, 17);
 			this.labelIsConnected.TabIndex = 10;
 			this.labelIsConnected.Text = "Not Connected";
-			// 
-			// parameterValue
-			// 
-			this.parameterValue.AutoSize = true;
-			this.parameterValue.Location = new System.Drawing.Point(554, 82);
-			this.parameterValue.Name = "parameterValue";
-			this.parameterValue.Size = new System.Drawing.Size(16, 17);
-			this.parameterValue.TabIndex = 11;
-			this.parameterValue.Text = "0";
 			// 
 			// textBoxKeepAlive
 			// 
@@ -223,22 +225,42 @@
 			this.keepAliveUpdate.UseVisualStyleBackColor = true;
 			this.keepAliveUpdate.Click += new System.EventHandler(this.keepAliveUpdate_Click);
 			// 
+			// comboBoxParameter
+			// 
+			this.comboBoxParameter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxParameter.FormattingEnabled = true;
+			this.comboBoxParameter.Location = new System.Drawing.Point(207, 79);
+			this.comboBoxParameter.Name = "comboBoxParameter";
+			this.comboBoxParameter.Size = new System.Drawing.Size(175, 24);
+			this.comboBoxParameter.TabIndex = 16;
+			this.comboBoxParameter.SelectedIndexChanged += new System.EventHandler(this.comboBoxParameter_SelectedIndexChanged);
+			// 
+			// checkBoxShowInHex
+			// 
+			this.checkBoxShowInHex.AutoSize = true;
+			this.checkBoxShowInHex.Location = new System.Drawing.Point(1068, 79);
+			this.checkBoxShowInHex.Name = "checkBoxShowInHex";
+			this.checkBoxShowInHex.Size = new System.Drawing.Size(105, 21);
+			this.checkBoxShowInHex.TabIndex = 18;
+			this.checkBoxShowInHex.Text = "Show in hex";
+			this.checkBoxShowInHex.UseVisualStyleBackColor = true;
+			// 
 			// GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(765, 513);
+			this.ClientSize = new System.Drawing.Size(1414, 664);
+			this.Controls.Add(this.checkBoxShowInHex);
+			this.Controls.Add(this.comboBoxParameter);
 			this.Controls.Add(this.keepAliveUpdate);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.textBoxKeepAlive);
-			this.Controls.Add(this.parameterValue);
 			this.Controls.Add(this.labelIsConnected);
 			this.Controls.Add(this.eventStatus);
 			this.Controls.Add(this.listViewLog);
 			this.Controls.Add(this.buttonExecute);
 			this.Controls.Add(this.parameter);
-			this.Controls.Add(this.trackBarParameter);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.comboBoxCommand);
 			this.Controls.Add(this.buttonConnect);
@@ -247,7 +269,6 @@
 			this.Text = "Foamatic Washing Equipment Tester";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
-			((System.ComponentModel.ISupportInitialize)(this.trackBarParameter)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -258,7 +279,6 @@
 		private System.Windows.Forms.Button buttonConnect;
 		private System.Windows.Forms.ComboBox comboBoxCommand;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TrackBar trackBarParameter;
 		private System.Windows.Forms.Label parameter;
 		private System.Windows.Forms.Button buttonExecute;
 		private System.ComponentModel.BackgroundWorker backgroundWorker1;
@@ -268,12 +288,15 @@
 		private System.Windows.Forms.ColumnHeader response;
 		public System.Windows.Forms.RichTextBox eventStatus;
 		private System.Windows.Forms.Label labelIsConnected;
-		private System.Windows.Forms.Label parameterValue;
 		private System.Windows.Forms.TextBox textBoxKeepAlive;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ColumnHeader telegramNumber;
 		private System.Windows.Forms.Button keepAliveUpdate;
 		private System.Windows.Forms.ColumnHeader responseTime;
+		private System.Windows.Forms.ComboBox comboBoxParameter;
+		private System.Windows.Forms.ColumnHeader hexadecimal;
+		private System.Windows.Forms.ColumnHeader responseHex;
+		public System.Windows.Forms.CheckBox checkBoxShowInHex;
 	}
 }
