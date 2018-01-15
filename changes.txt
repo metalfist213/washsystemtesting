@@ -1,0 +1,5 @@
+product valve skal være 0 1 
+sorter efter de første 4
+error ser mærkelig ud 5
+disconnect crasher 2
+watchdog skal ændre instantly 3
