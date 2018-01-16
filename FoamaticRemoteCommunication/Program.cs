@@ -11,7 +11,7 @@ namespace FoamaticRemoteCommunication {
 	class Program {
 		[STAThread]
 		static void Main(string[] args) {
-			DummyServer s = new DummyServer();
+			//DummyServer s = new DummyServer();
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);

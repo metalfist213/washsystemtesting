@@ -18,6 +18,7 @@ namespace FoamaticRemoteCommunication {
 		private int watchdogInterval;
 		private bool closing;
 		private Object threadLock = new Object();
+		private bool running;
 
 		public int WatchdogInterval { get => watchdogInterval; set => ChangeWatchdogInterval(value); }
 
@@ -30,7 +31,7 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		public Connection(string ip) {
-
+			this.running = true;
 			this.client = new TcpClient(ip, 5000);
 
 
@@ -70,13 +71,10 @@ namespace FoamaticRemoteCommunication {
 
 						transmission.StartStopWatch();
 						transmission.TransmissionNumber = transmissionsSent;
-						if (transmission.Command != Command.watchdog) {
-							transmission.SendHex = BitConverter.ToString(telegram);
-							OnSend(transmission);
-						}
 
-
+						transmission.SendHex = BitConverter.ToString(telegram);
 						this.pendingTransmissions.Add(transmissionsSent, transmission);
+						OnSend(transmission);
 
 						//Console.Write("The byte-array looks like this:\n");
 						string bitToString = BitConverter.ToString(telegram);
@@ -96,18 +94,19 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		private void KeepAlive() {
-			Transmission watchdog;
-			while (this.client.Connected && !closing) {
-				watchdog = new Transmission(Command.watchdog);
+			Event watchdog;
+			while (running) {
+				watchdog = new Event(Command.watchdog);
 				this.SendTransmission(watchdog);
-				Console.WriteLine("Watchdog sent from client");
 				Thread.Sleep(WatchdogInterval);
 			}
 		}
 
 		public void Close() {
+			running = false;
 
-			this.watchdogThread.Abort();
+			while (this.watchdogThread.ThreadState.Equals(System.Threading.ThreadState.Running)) ;
+
 			this.listener.Abort();
 			if (client.Connected)
 				this.client.GetStream().Close(0);
@@ -124,15 +123,16 @@ namespace FoamaticRemoteCommunication {
 		private void Listener() {
 			try {
 				NetworkStream stream = client.GetStream();
-				byte[] buffer = new byte[32];
-				byte[] transmissionSent = new byte[2];
+
 				while (client.Connected && !this.closing) {
+					byte[] buffer = new byte[32];
 					stream.Read(buffer, 0, 32);
+					
+					
 					if (buffer[0] == 0x06 || buffer[0] == 0x15) {
 						HandleResponse(buffer);
 					} else {
 						HandleEvent(buffer);
-						Console.WriteLine("Watch Dog");
 					}
 				}
 			} catch (System.IO.IOException) {
@@ -155,8 +155,17 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		private void HandleEvent(byte[] buffer) {
-			Event statusEvent = new Event(buffer);
-			this.OnEvent(statusEvent);
+			//If Status = Event
+
+
+			if (buffer[5] == 0xD7) {
+				byte[] i =  { buffer[3], buffer[2]};
+				Event e = (Event) pendingTransmissions[BitConverter.ToUInt16(i, 0)];
+				e.ExtractInformation(buffer);
+				this.OnResponse(e);
+			} else {
+				this.OnEvent(new Event(buffer));
+			}
 		}
 
 		public virtual void OnResponse(Transmission transmission) {

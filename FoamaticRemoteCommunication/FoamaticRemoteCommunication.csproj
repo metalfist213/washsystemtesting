@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{21F70594-89EA-462D-A296-115313AF0C58}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>FoamaticRemoteCommunication</RootNamespace>
     <AssemblyName>FoamaticRemoteCommunication</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>

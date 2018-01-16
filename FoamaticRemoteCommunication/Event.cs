@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FoamaticRemoteCommunication {
 
-	class Event {
+	class Event : Transmission {
 		private Status status;
 		private UInt16 number;
 		private string errorWord1;
@@ -17,7 +17,6 @@ namespace FoamaticRemoteCommunication {
 		private int programNumber;
 		private ProgramStatus programStatus;
 		private int errorCode;
-		private string inHex;
 
 		public string ErrorWord1 { get => errorWord1; set => errorWord1 = value; }
 		public string ErrorWord2 { get => errorWord2; set => errorWord2 = value; }
@@ -29,7 +28,6 @@ namespace FoamaticRemoteCommunication {
 		internal ProgramStatus ProgramStatus { get => programStatus; set => programStatus = value; }
 		public bool CleaningInProgress { get => cleaningInProgress; set => cleaningInProgress = value; }
 		public ushort Number { get => number; set => number = value; }
-		public string InHex { get => inHex; set => inHex = ConvertToReadableHex(value); }
 
 		public Event() {
 			errorWord1 = "";
@@ -38,7 +36,14 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		public Event(byte[] buffer) : this() {
-			this.InHex = BitConverter.ToString(buffer);
+			ExtractInformation(buffer);
+		}
+
+		public Event(Command command) : base(command) {
+		}
+
+		public void ExtractInformation(byte[] buffer) {
+			this.ResponseHex = BitConverter.ToString(buffer);
 			byte[] number = {buffer[3], buffer[2]};
 			byte[] status = {buffer[5], buffer[4]};
 			byte[] error1Word = {buffer[6], buffer[7], buffer[8], buffer[9]};
@@ -53,7 +58,7 @@ namespace FoamaticRemoteCommunication {
 
 			//General info and errors
 			this.Number = BitConverter.ToUInt16(number, 0);
-			this.Status = BitConverter.ToUInt16(status, 0) == 0x00D7 ? Status.WATCHDOG : Status.WATCHDOG;
+			this.Status = BitConverter.ToUInt16(status, 0) == 0x00D7 ? Status.WATCHDOG : Status.EVENT;
 			this.ErrorWord1 = ConvertToByteToString(error1Word);
 			this.ErrorWord2 = ConvertToByteToString(error2Word);
 			this.PumpErrorWord = ConvertToByteToString(pumpErrorWord);

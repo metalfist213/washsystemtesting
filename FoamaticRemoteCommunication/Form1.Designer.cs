@@ -38,7 +38,6 @@
 			this.response = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.responseHex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.responseTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.eventStatus = new System.Windows.Forms.RichTextBox();
 			this.labelIsConnected = new System.Windows.Forms.Label();
 			this.textBoxKeepAlive = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -46,11 +45,6 @@
 			this.keepAliveUpdate = new System.Windows.Forms.Button();
 			this.comboBoxParameter = new System.Windows.Forms.ComboBox();
 			this.checkBoxShowInHex = new System.Windows.Forms.CheckBox();
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ip
@@ -126,9 +120,9 @@
             this.response,
             this.responseHex,
             this.responseTime});
-			this.listViewLog.Location = new System.Drawing.Point(0, 27);
+			this.listViewLog.Location = new System.Drawing.Point(15, 109);
 			this.listViewLog.Name = "listViewLog";
-			this.listViewLog.Size = new System.Drawing.Size(1387, 510);
+			this.listViewLog.Size = new System.Drawing.Size(1046, 473);
 			this.listViewLog.TabIndex = 8;
 			this.listViewLog.UseCompatibleStateImageBehavior = false;
 			this.listViewLog.View = System.Windows.Forms.View.Details;
@@ -168,20 +162,6 @@
 			// 
 			this.responseTime.Text = "Delay";
 			this.responseTime.Width = 93;
-			// 
-			// eventStatus
-			// 
-			this.eventStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.eventStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.1F);
-			this.eventStatus.Location = new System.Drawing.Point(3, 27);
-			this.eventStatus.Name = "eventStatus";
-			this.eventStatus.ReadOnly = true;
-			this.eventStatus.Size = new System.Drawing.Size(357, 529);
-			this.eventStatus.TabIndex = 9;
-			this.eventStatus.Text = "Status:";
-			this.eventStatus.TextChanged += new System.EventHandler(this.eventStatus_TextChanged);
 			// 
 			// labelIsConnected
 			// 
@@ -244,38 +224,19 @@
 			// checkBoxShowInHex
 			// 
 			this.checkBoxShowInHex.AutoSize = true;
-			this.checkBoxShowInHex.Location = new System.Drawing.Point(3, 3);
+			this.checkBoxShowInHex.Location = new System.Drawing.Point(759, 82);
 			this.checkBoxShowInHex.Name = "checkBoxShowInHex";
-			this.checkBoxShowInHex.Size = new System.Drawing.Size(105, 21);
+			this.checkBoxShowInHex.Size = new System.Drawing.Size(203, 21);
 			this.checkBoxShowInHex.TabIndex = 18;
-			this.checkBoxShowInHex.Text = "Show in hex";
+			this.checkBoxShowInHex.Text = "Show Watchdog Telegrams";
 			this.checkBoxShowInHex.UseVisualStyleBackColor = true;
-			// 
-			// splitContainer1
-			// 
-			this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.splitContainer1.Location = new System.Drawing.Point(13, 80);
-			this.splitContainer1.Name = "splitContainer1";
-			// 
-			// splitContainer1.Panel1
-			// 
-			this.splitContainer1.Panel1.Controls.Add(this.listViewLog);
-			// 
-			// splitContainer1.Panel2
-			// 
-			this.splitContainer1.Panel2.Controls.Add(this.eventStatus);
-			this.splitContainer1.Panel2.Controls.Add(this.checkBoxShowInHex);
-			this.splitContainer1.Size = new System.Drawing.Size(1390, 536);
-			this.splitContainer1.SplitterDistance = 1023;
-			this.splitContainer1.TabIndex = 19;
 			// 
 			// GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1414, 664);
+			this.ClientSize = new System.Drawing.Size(1073, 594);
+			this.Controls.Add(this.checkBoxShowInHex);
 			this.Controls.Add(this.comboBoxParameter);
 			this.Controls.Add(this.keepAliveUpdate);
 			this.Controls.Add(this.label3);
@@ -288,16 +249,11 @@
 			this.Controls.Add(this.comboBoxCommand);
 			this.Controls.Add(this.buttonConnect);
 			this.Controls.Add(this.ip);
-			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.listViewLog);
 			this.Name = "GUI";
 			this.Text = "Foamatic Washing Equipment Tester";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.Panel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -315,7 +271,6 @@
 		private System.Windows.Forms.ColumnHeader command;
 		private System.Windows.Forms.ColumnHeader status;
 		private System.Windows.Forms.ColumnHeader response;
-		public System.Windows.Forms.RichTextBox eventStatus;
 		private System.Windows.Forms.Label labelIsConnected;
 		private System.Windows.Forms.TextBox textBoxKeepAlive;
 		private System.Windows.Forms.Label label2;
@@ -327,6 +282,5 @@
 		private System.Windows.Forms.ColumnHeader hexadecimal;
 		private System.Windows.Forms.ColumnHeader responseHex;
 		public System.Windows.Forms.CheckBox checkBoxShowInHex;
-		private System.Windows.Forms.SplitContainer splitContainer1;
 	}
 }

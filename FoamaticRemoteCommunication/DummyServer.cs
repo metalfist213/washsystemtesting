@@ -53,7 +53,7 @@ namespace FoamaticRemoteCommunication {
 					Console.WriteLine("Received from client: " + BitConverter.ToString(byteBuffer));
 
 					//Simulates ping
-					Thread.Sleep(500);
+					//Thread.Sleep(500);
 					byte[] cmd = {byteBuffer[5], byteBuffer[4] };
 					if (BitConverter.ToUInt16(cmd, 0) == Command.watchdog.CommandId) {
 
@@ -62,13 +62,15 @@ namespace FoamaticRemoteCommunication {
 						//}
 						//if (byteBuffer.Equals(lastWatchdog)) break;
 						//lastWatchdog = byteBuffer;
-
-						Console.WriteLine("Server received watchdog");
+						byte[] b = { byteBuffer[2], byteBuffer[3] };
+						str.Write(this.ReplyWatchdog(b), 0, 32);
+						str.Flush();
+						
 						//client.GetStream().Close();
 						//client.Close();
 						continue;
 					} else {
-						returnByteArray[0] = 0x06;
+						returnByteArray[0] = 0x15;
 						returnByteArray[1] = byteBuffer[2];
 						returnByteArray[2] = byteBuffer[3];
 						str.Write(returnByteArray, 0, 3);
@@ -76,8 +78,8 @@ namespace FoamaticRemoteCommunication {
 						//timeoutSimulation.Abort();
 					}
 
-					str.Write(TestEvent(), 0, 32);
-					str.Flush();
+					//str.Write(TestEvent(), 0, 32);
+					//str.Flush();
 
 
 				} catch (System.IO.IOException) {
@@ -102,7 +104,35 @@ namespace FoamaticRemoteCommunication {
 			byte[] programPaused = {0, 0};
 			byte[] programFailed = {0x04, (byte) r.Next(0, 16)};
 
-			byte[] buffer = {0x54, 0x54, number[0], number[1], status[0], status[1],
+			byte[] buffer = {0x53, 0x54, number[0], number[1], status[0], status[1],
+				error1Word[0], error1Word[1], error1Word[2], error1Word[3],
+				error2Word[0], error2Word[1], error2Word[2], error2Word[3],
+				pumpErrorWord[0], pumpErrorWord[1], pumpErrorWord[2], pumpErrorWord[3],
+				cleaningReady[0], cleaningReady[1],
+				cleaningInProgress[0], cleaningInProgress[1],
+				programFinished[0], programFinished[1],
+				programStopped[0], programStopped[1],
+				programPaused[0], programPaused[1],
+				programFailed[0], programFailed[1],
+				0x45, 0x54};
+
+			return buffer;
+		}
+
+		private byte[] ReplyWatchdog(byte[] nmb) {
+			byte[] number = {nmb[0], nmb[1]};
+			byte[] status = {0, 0xD7};
+			byte[] error1Word = {0x48, 0x45, 0x4C, 0x4F};
+			byte[] error2Word = {0x57, 0x52, 0x4C, 0x44};
+			byte[] pumpErrorWord = {0x50, 0x55, 0x4D, 0x50};
+			byte[] cleaningReady = {0x00, 0x01};
+			byte[] cleaningInProgress = {0, 0};
+			byte[] programFinished = {0, 0};
+			byte[] programStopped = {0, 0};
+			byte[] programPaused = {0, 0};
+			byte[] programFailed = {0x04, (byte) r.Next(0, 16)};
+
+			byte[] buffer = {0x53, 0x54, number[0], number[1], status[0], status[1],
 				error1Word[0], error1Word[1], error1Word[2], error1Word[3],
 				error2Word[0], error2Word[1], error2Word[2], error2Word[3],
 				pumpErrorWord[0], pumpErrorWord[1], pumpErrorWord[2], pumpErrorWord[3],

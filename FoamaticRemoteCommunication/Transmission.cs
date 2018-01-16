@@ -18,6 +18,10 @@ namespace FoamaticRemoteCommunication {
 
 		private Stopwatch watch;
 
+		public Transmission() {
+
+		}
+
 		public Transmission(Command command) {
 			this.Command = command;
 			this.watch = new Stopwatch();
@@ -58,8 +62,11 @@ namespace FoamaticRemoteCommunication {
 			return this.watch.ElapsedMilliseconds;
 		}
 
-		internal int getBitwiseParameter() {
-			return (ushort)(Math.Log(parameter) / Math.Log(2));
+		internal int GetStringIndex() {
+			if (command.Bitwise)
+				return (ushort)(Math.Log(parameter) / Math.Log(2));
+			else
+				return parameter;
 		}
 
 		private string ConvertToReadableHex(string s) {

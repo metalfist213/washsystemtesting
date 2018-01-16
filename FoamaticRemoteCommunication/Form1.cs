@@ -42,7 +42,7 @@ namespace FoamaticRemoteCommunication {
 			} else {
 				this.comboBoxParameter.Enabled = true;
 				this.comboBoxParameter.Items.Clear();
-				if (current.Bitwise) {
+				if (current.HasParameterName) {
 					for (UInt16 i = current.MinValue; i <= current.MaxValue; i++) {
 						this.comboBoxParameter.Items.Add(current.ParameterNames[i]);
 					}
@@ -120,8 +120,8 @@ namespace FoamaticRemoteCommunication {
 		private void buttonExecute_Click(object sender, EventArgs e) {
 			Transmission newTransmission = new Transmission((Command) this.comboBoxCommand.SelectedItem);
 
-			if (newTransmission.Command.Bitwise) {
-				newTransmission.Parameter = Constants.GetIndexByString((string)this.comboBoxParameter.SelectedItem, newTransmission.Command.ParameterNames);
+			if (newTransmission.Command.HasParameterName) {
+				newTransmission.Parameter = NameConstant.GetIndexByString((string)this.comboBoxParameter.SelectedItem, newTransmission.Command.ParameterNames);
 			} else {
 				if (newTransmission.Command.MaxValue != 0)
 					newTransmission.Parameter = (UInt16)this.comboBoxParameter.SelectedItem;
@@ -191,8 +191,15 @@ namespace FoamaticRemoteCommunication {
 		public bool InvokeRequired { get; private set; }
 
 		public override void OnResponse(Transmission transmission) {
+			while (gui == null) ;
 			gui.Invoke(new MethodInvoker(delegate {
+				if(transmission.Command == Command.watchdog && !this.gui.checkBoxShowInHex.Checked) {
+					Console.WriteLine("Skip!");
+					return;
+				}
+
 				ListViewItem item = this.gui.listViewLog.FindItemWithText(transmission.TransmissionNumber.ToString());
+				if (item == null) return;
 				item.UseItemStyleForSubItems = false;
 				item.SubItems[3].Text = "done";
 				item.SubItems[4].ForeColor = (transmission.Acknowledge.Equals(AcknowledgeType.ACK)) ? Color.Green : Color.Red;
@@ -203,23 +210,26 @@ namespace FoamaticRemoteCommunication {
 		}
 
 		public override void OnSend(Transmission transmission) {
+			while (gui == null) ;
 			gui.Invoke(new MethodInvoker(delegate {
 				string[] row;
-				if (!transmission.Command.Bitwise) {
-					string additionalParameter = (transmission.Command.MaxValue != 0) ? ", "+transmission.Parameter.ToString() : ""; 
+				if (!transmission.Command.HasParameterName) {
+					string additionalParameter = (transmission.Command.MaxValue != 0) ? ", "+transmission.Parameter.ToString() : "";
 					string[] altrow = { transmission.TransmissionNumber.ToString(), transmission.Command.Name + additionalParameter, transmission.SendHex, "pending..", "","", "..."};
 					row = altrow;
 				} else {
-					string[] altrow = { transmission.TransmissionNumber.ToString(),transmission.Command.Name + ", " + transmission.Command.ParameterNames[transmission.getBitwiseParameter()], transmission.SendHex, "pending..", "", "", "..."};
+					string[] altrow = { transmission.TransmissionNumber.ToString(),transmission.Command.Name + ", " + transmission.Command.ParameterNames[transmission.GetStringIndex()], transmission.SendHex, "pending..", "", "", "..."};
 					row = altrow;
 				}
 				ListViewItem item = new ListViewItem(row);
 				item.SubItems[2].Text = transmission.SendHex;
+				if (transmission.Command == Command.watchdog && !gui.checkBoxShowInHex.Checked) return;
 				this.gui.listViewLog.Items.Insert(0, item);
 			}));
 		}
 
 		public override void OnEvent(Event status) {
+			while (gui == null) ;
 			if (status == null) {
 				return;
 			}
@@ -251,14 +261,30 @@ namespace FoamaticRemoteCommunication {
 						newStatus += "Program " + status.ProgramNumber + " " + ProgramStatus.FAILED.ToString() + " with error code: " + status.ErrorCode;
 					}
 
-					if(gui.checkBoxShowInHex.Checked) {
-						newStatus += "\n\nIn Hexadecimal:\n" + status.InHex;
+					if (gui.checkBoxShowInHex.Checked) {
+						newStatus += "\n\nIn Hexadecimal:\n" + status.ResponseHex;
 					}
 
-					gui.eventStatus.Text = newStatus;
+					
+					if (status.Status.Equals(Status.WATCHDOG)) {
+						if (gui.checkBoxShowInHex.Checked) {
+							string[] items = {status.ProgramNumber.ToString(), "Watchdog", "-", "-", "-", status.ResponseHex, "-"};
+							ListViewItem item = new ListViewItem(items);
+							gui.listViewLog.Items.Insert(0, item);
+						}
+					} else {
+						string[] items = {"-", "Event", "-", "-", "-", status.ResponseHex, "-"};
+						ListViewItem item = new ListViewItem(items);
+						item.BackColor = Color.Yellow;
+						gui.listViewLog.Items.Insert(0, item);
+					}
+					
+
+
+					//gui.eventStatus.Text = newStatus;
 				}));
-			} catch(System.NullReferenceException e) {
-				Console.WriteLine("Null Reference Exception\n"+e);
+			} catch (System.NullReferenceException e) {
+				Console.WriteLine("Null Reference Exception\n" + e);
 			}
 		}
 

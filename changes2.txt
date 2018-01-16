@@ -1,5 +1,3 @@
+watchdog problem
 
-watchdog show watchdog telegrams
-
-respons i hex
-
+timestamp
